@@ -30,7 +30,9 @@ It can look like the following:
 The generate log file is stored per default in "~/knowrob-memory" 
 
 \section{Data}
-After you generate your first \neem~you
+After you generate your first \neem~you will find a folder with a timestamp store in the "~/knowrob-memory" folder (per default).
+This folder contains the \neemnar and \neemexp . The \neemnar is represented in the "beliefstate.owl". The triple store and the \neemexp are stored in the "roslog" folder. The triple store is stored in the "triples.bson". The other bsons files are presentening the logged rostopics. More about the rostopics is stated in Section \todo{put reference to rostopic section}
+
 \section{Log own designed plans}
 The disadvantage of having a strong semantic knowledge representation is that our ontology.
 Currently, we focused on the support on setting-up and cleaning-up a table.
@@ -52,32 +54,43 @@ If this step you added successfully the support of the new action to the logger.
 \subsection{Adding New Objects}
 Unknown object will be logged as \textit{DesignedArtifact} with the comment attached "Unknown Object: CRAM-OBJECT-TYPE"
 To add your object to the ontology, you need to add it in the \easeObj.
-Afterwards open the "utils-for-perform.lisp" in the 
+Afterwards, open the "utils-for-perform.lisp" in the 
 cram-cloud-logger package and include the new object in the hash table generate in "get-ease-object-lookup-table" where the key is the CRAM-OBJECT-TYPE and the value is the uri to the object concept created in \easeObj.
-\subsection{Adding New Parameters}
+
 \subsection{Adding New Failure}
-\subsection{Adding New RosTopic}
+Unknown failures will be logged as \textit{Failure} with the comment attached "Unknown failure: CRAM-FAILURE-NAME".
+To integrate your new \cram failures in to the ontology, you need to add your new failures into the \cramOwl.
+Afterwards, open "failure-handler.lisp" in the cram-cloud-logger package and your new action in the format "(CRAM-FAILURE-NAME CRAM-ONTOLOGY-NAME)".	
+
+\subsection{Adding New Rostopic}
+Per default, we log the rostopics \tf and tf\_static.
+If you need to log additional topics, open "memory.pl" in the "knowrob\_memory" package from \knowrob and include your topic in the "mem\_episode\_start(Episode)" function.
+After the \neem generation, the data will be stored in the created \neem folder under the file "roslog/<rostopic>.bson".
+
+\subsection{Adding New Parameters}
+Unknown parameters will be logged as comment attached to the corresponding \textit{PlanExecution} instance.
+The comment statement "Unknown Parameter: PARAMETER-NAME  -\#\#\#\#- PARAMETER-VALUE/>"
+The current parameter types are represented 
+
+\todo{@Ontology group: Please make sure that is available in the ontology }
+
+\begin{enumerate} 
+	\item Integer/Floats
+	\item Posen
+	\item Spatial Relations
+	\item Link to entities of other ontologies such as http://knowrob.org/kb/PR2.owl\#pr2\_right\_arm
+\end{enumerate}
+
+Before you want to model your parameter what data type your parameter is.
+If it is a complex object, you need to consider how you want to to represent it an the ontology.
+For simpler representaion such has a discrete domain representation, you might represented as the domain values as \textit{Region} and add the model the parameter as a subconcept of \textit{Parameter}.
+More information about the concepts \textit{Region} and \textit{Parameter} can be found in \todo{ reference to Region and parameter}.
+
 
 \subsection{Adding New Reasoning Tasks}
 \todo{@Ontology group: How to log the result of the reasoning query ?}
 
-Ontology changes:
-\begin{enumerate}
-	\item Update EASE ontology 
-	\item Update EASE ACT ontology.
-	\item Update CRAM ontology
-\end{enumerate}
 
-CRAM changes:
-\begin{enumerate}
-	\item Error
-	\item Object
-	\item Action Mapping
-	\item Reasoning
-	\item Parameter
-\end{enumerate}
-
-Log rostopic
 
 \section{Next steps}
 After you have generate your \neem, you can use the tool \todo{Add neem2narrative} to generate an cvs file for your \neem.
